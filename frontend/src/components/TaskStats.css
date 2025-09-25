@@ -1,0 +1,125 @@
+/* Task Stats Styles */
+.task-stats {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+}
+
+.task-stats h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  border-left: 4px solid #ddd;
+}
+
+.stat-card h4 {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-card.total {
+  border-left-color: #007bff;
+}
+
+.stat-card.total .stat-number {
+  color: #007bff;
+}
+
+.stat-card.pending {
+  border-left-color: #ffc107;
+}
+
+.stat-card.pending .stat-number {
+  color: #ffc107;
+}
+
+.stat-card.in-progress {
+  border-left-color: #17a2b8;
+}
+
+.stat-card.in-progress .stat-number {
+  color: #17a2b8;
+}
+
+.stat-card.completed {
+  border-left-color: #28a745;
+}
+
+.stat-card.completed .stat-number {
+  color: #28a745;
+}
+
+.stat-card.overdue {
+  border-left-color: #dc3545;
+}
+
+.stat-card.overdue .stat-number {
+  color: #dc3545;
+}
+
+.priority-stats h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.priority-grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.priority-item {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.priority-item.high {
+  background: #fee;
+  color: #dc3545;
+}
+
+.priority-item.medium {
+  background: #fff3cd;
+  color: #ffc107;
+}
+
+.priority-item.low {
+  background: #e7f5e7;
+  color: #28a745;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .priority-grid {
+    justify-content: center;
+  }
+}
