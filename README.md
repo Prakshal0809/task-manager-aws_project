@@ -267,10 +267,73 @@ npm run db:migrate
 
 ---
 
-## Next Steps: AWS Deployment
+## 🚀 AWS Deployment
 
-This application is designed to be deployed on AWS. See the deployment guide for instructions on:
-- Frontend deployment to S3 + CloudFront
-- Backend deployment to EC2
-- Database migration to RDS
-- Domain setup with Route 53
+This application can be deployed to AWS using the free tier. See the [deployment guide](./deploy/README.md) for detailed instructions.
+
+### Quick Deployment Options
+
+1. **Automated Deployment** (Recommended):
+   ```bash
+   chmod +x deploy/quick-deploy.sh
+   ./deploy/quick-deploy.sh
+   ```
+
+2. **Manual Deployment**:
+   - Follow the [comprehensive guide](./deploy/DEPLOYMENT_GUIDE.md)
+   - Use individual deployment scripts in the `deploy/` directory
+
+3. **Docker Deployment**:
+   ```bash
+   docker-compose up -d
+   ```
+
+### AWS Infrastructure Required
+- **EC2 Instance** (t2.micro) - Backend hosting
+- **RDS PostgreSQL** (db.t3.micro) - Database
+- **S3 Bucket** - Frontend hosting
+- **CloudFront** - CDN and SSL
+
+### Deployment Features
+- ✅ Automated setup scripts
+- ✅ Production environment configuration
+- ✅ SSL certificate support
+- ✅ PM2 process management
+- ✅ Nginx reverse proxy
+- ✅ Database migrations
+- ✅ Health checks and monitoring
+- ✅ Cost optimization for free tier
+
+## 🐳 Docker Development
+
+For local development with Docker:
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+## 📊 Monitoring
+
+### Local Development
+- Backend: `http://localhost:5000/health`
+- Frontend: `http://localhost:3000`
+
+### Production (AWS)
+- Backend: `http://your-ec2-ip/health`
+- Frontend: `https://your-domain.com`
+
+---
+
+## Local Development
+
+This application is configured to run locally. Make sure you have:
+- Node.js installed
+- PostgreSQL database running locally
+- Environment variables configured in your `.env` file
