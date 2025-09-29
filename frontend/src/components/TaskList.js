@@ -29,7 +29,7 @@ const TaskList = ({ tasks, loading, onEdit, onDelete, onStatusChange }) => {
 
   return (
     <div className="task-list">
-      <h3>Your Tasks ({tasks.length})</h3>
+      <h3>📋 Your Tasks ({tasks.length}) - Live Updates!</h3>
       
       <div className="tasks-grid">
         {tasks.map(task => (

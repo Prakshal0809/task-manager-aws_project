@@ -111,8 +111,8 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
-            <h1>Task Manager</h1>
-            <p>Welcome back, {user?.firstName || user?.username}!</p>
+            <h1>🚀 Task Manager - CI/CD Active!</h1>
+            <p>Welcome back, {user?.firstName || user?.username}! ✨ Auto-deployed</p>
           </div>
           <div className="header-right">
             <button 
