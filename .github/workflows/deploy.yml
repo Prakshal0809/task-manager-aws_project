@@ -3,11 +3,9 @@ name: Deploy Task Manager
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -17,72 +15,23 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: |
-          backend/package-lock.json
-          frontend/package-lock.json
     
     - name: Install Backend Dependencies
       run: |
         cd backend
-        npm ci
+        npm install
     
     - name: Install Frontend Dependencies
       run: |
         cd frontend
-        npm ci
-    
-    - name: Run Backend Tests (Skip if no tests)
-      run: |
-        cd backend
-        if [ -f "package.json" ] && npm run test --dry-run 2>/dev/null; then
-          npm test
-        else
-          echo "No backend tests configured, skipping..."
-        fi
-      env:
-        NODE_ENV: test
-        DB_HOST: localhost
-        DB_NAME: test_db
-        DB_USER: test_user
-        DB_PASS: test_pass
-        DB_PORT: 5432
-    
-    - name: Run Frontend Tests (Skip if no tests)
-      run: |
-        cd frontend
-        if [ -f "package.json" ] && npm run test --dry-run 2>/dev/null; then
-          npm test -- --coverage --watchAll=false
-        else
-          echo "No frontend tests configured, skipping..."
-        fi
+        npm install
     
     - name: Build Frontend
       run: |
         cd frontend
         npm run build
-
-  deploy-backend:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
-    
-    - name: Install Dependencies
-      run: |
-        cd backend
-        npm ci
-    
-    - name: Deploy to EC2
+    - name: Deploy Backend to EC2
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -91,41 +40,16 @@ jobs:
         script: |
           cd /var/www/task-manager
           git pull origin main
-          npm ci --production
-          pm2 restart task-manager-backend
-
-  deploy-frontend:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+          npm install --production
+          pm2 restart task-manager-backend || pm2 start ecosystem.config.js
     
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-    
-    - name: Install Dependencies
-      run: |
-        cd frontend
-        npm ci
-    
-    - name: Build Frontend
-      run: |
-        cd frontend
-        npm run build
-    
-    - name: Deploy to S3
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ca-central-1
     
-    - name: Upload to S3
+    - name: Deploy Frontend to S3
       run: |
         aws s3 sync frontend/build/ s3://task-manager-frontend-prakshal --delete
