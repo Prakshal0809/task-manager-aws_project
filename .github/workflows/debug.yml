@@ -1,0 +1,45 @@
+name: Debug CI/CD Issues
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Test Frontend Build
+      run: |
+        echo "Testing frontend build..."
+        cd frontend
+        npm install
+        npm run build
+        echo "✅ Frontend build successful!"
+    
+    - name: Test AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ca-central-1
+    
+    - name: Test S3 Bucket Access
+      run: |
+        echo "Testing S3 bucket access..."
+        aws s3 ls s3://task-manager-frontend-prakshal
+        echo "✅ S3 bucket accessible!"
+    
+    - name: Test S3 Upload
+      run: |
+        echo "Testing S3 upload..."
+        echo "test" > test.txt
+        aws s3 cp test.txt s3://task-manager-frontend-prakshal/test.txt
+        echo "✅ S3 upload successful!"
