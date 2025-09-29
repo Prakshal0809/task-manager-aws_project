@@ -1,6 +1,6 @@
 # 🚀 CI/CD Pipeline for Task Manager
 
-> **Status**: ✅ CI/CD Pipeline Active - Last updated: $(date)
+> **Status**: ✅ CI/CD Pipeline Active - EC2 Git Setup Complete!
 
 ## Quick Start
 
