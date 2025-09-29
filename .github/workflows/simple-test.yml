@@ -1,0 +1,31 @@
+name: Simple Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Test AWS Connection
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ca-central-1
+    
+    - name: List S3 Buckets
+      run: |
+        echo "Listing all S3 buckets..."
+        aws s3 ls
+        echo "✅ S3 connection successful!"
+    
+    - name: Check Specific Bucket
+      run: |
+        echo "Checking task-manager-frontend-prakshal bucket..."
+        aws s3 ls s3://task-manager-frontend-prakshal
+        echo "✅ Bucket accessible!"

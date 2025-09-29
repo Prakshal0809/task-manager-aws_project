@@ -8,23 +8,7 @@ const TaskList = ({ tasks, loading, onEdit, onDelete, onStatusChange }) => {
     return date.toLocaleDateString();
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'orange';
-      case 'in-progress': return 'blue';
-      case 'completed': return 'green';
-      default: return 'gray';
-    }
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return 'red';
-      case 'medium': return 'orange';
-      case 'low': return 'green';
-      default: return 'gray';
-    }
-  };
+  // Removed unused functions to fix ESLint warnings
 
   const handleStatusChange = (task, newStatus) => {
     onStatusChange({ ...task, status: newStatus });

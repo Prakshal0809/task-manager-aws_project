@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { taskAPI } from '../services/api';
 import { toast } from 'react-toastify';
@@ -22,12 +22,7 @@ const Dashboard = () => {
 
   const { user, logout } = useAuth();
 
-  useEffect(() => {
-    fetchTasks();
-    fetchStats();
-  }, [filters]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
       const response = await taskAPI.getTasks(filters);
@@ -37,16 +32,21 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await taskAPI.getStats();
       setStats(response.data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTasks();
+    fetchStats();
+  }, [fetchTasks, fetchStats]);
 
   const handleCreateTask = async (taskData) => {
     try {
