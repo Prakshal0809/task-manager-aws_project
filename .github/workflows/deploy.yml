@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  deploy:
+  test-components:
     runs-on: ubuntu-latest
     
     steps:
@@ -16,23 +16,44 @@ jobs:
       with:
         node-version: '18'
     
-    - name: Install and Build Frontend
+    - name: Test Frontend Build
       run: |
+        echo "Testing frontend build..."
         cd frontend
         npm install
         npm run build
+        echo "✅ Frontend build successful!"
     
-    - name: Deploy Frontend to S3
+    - name: Test AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ca-central-1
     
-    - name: Upload Frontend to S3
+    - name: Test S3 Access
       run: |
+        echo "Testing S3 access..."
+        aws s3 ls s3://task-manager-frontend-prakshal
+        echo "✅ S3 access successful!"
+    
+    - name: Test EC2 SSH Connection
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          echo "Testing EC2 connection..."
+          pwd
+          whoami
+          echo "✅ EC2 connection successful!"
+    
+    - name: Deploy Frontend to S3
+      run: |
+        echo "Deploying frontend to S3..."
         aws s3 sync frontend/build/ s3://task-manager-frontend-prakshal --delete
-        echo "Frontend deployed successfully!"
+        echo "✅ Frontend deployed to S3!"
     
     - name: Deploy Backend to EC2
       uses: appleboy/ssh-action@v0.1.5
@@ -41,7 +62,9 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          echo "Deploying backend to EC2..."
           cd /var/www/task-manager
+          echo "Current directory: $(pwd)"
           echo "Pulling latest code..."
           git pull origin main
           echo "Installing dependencies..."
@@ -49,4 +72,4 @@ jobs:
           npm install --production
           echo "Restarting application..."
           pm2 restart task-manager-backend || pm2 start ecosystem.config.js
-          echo "Backend deployed successfully!"
+          echo "✅ Backend deployed to EC2!"
