@@ -1,5 +1,7 @@
 # 🚀 CI/CD Pipeline for Task Manager
 
+> **Status**: ✅ CI/CD Pipeline Active - Last updated: $(date)
+
 ## Quick Start
 
 ### 1. Set up GitHub Secrets
