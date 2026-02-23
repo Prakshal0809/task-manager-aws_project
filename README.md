@@ -5,6 +5,7 @@ A full-stack task management application built with React, Node.js/Express, and 
 ## 🏗️ Project Structure
 
 ```
+Palak Gandu
 task-manager/
 ├── backend/                 # Node.js/Express API
 │   ├── src/
